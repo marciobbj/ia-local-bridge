@@ -234,9 +234,9 @@ export const useChatStore = create(
                     let thinkingEndTime = null;
 
                     const THOUGHT_PATTERNS = [
-                        { start: '<think>', end: '</think>' },
-                        { start: '<thought>', end: '</thought>' },
-                        { start: '[THOUGHT]', end: '[/THOUGHT]' }
+                        { start: /<think>/i, end: /<\/think>/i },
+                        { start: /<thought>/i, end: /<\/thought>/i },
+                        { start: /\[THOUGHT\]/i, end: /\[\/THOUGHT\]/i }
                     ];
 
                     for await (const chunk of stream) {
@@ -246,7 +246,7 @@ export const useChatStore = create(
                         // Check if thinking just finished
                         if (!thinkingEndTime) {
                             for (const pattern of THOUGHT_PATTERNS) {
-                                if (fullContent.includes(pattern.end)) {
+                                if (pattern.end.test(fullContent)) {
                                     thinkingEndTime = Date.now();
                                     break;
                                 }
@@ -261,7 +261,7 @@ export const useChatStore = create(
                             // Check if currently thinking
                             let isThinking = false;
                             for (const pattern of THOUGHT_PATTERNS) {
-                                if (fullContent.includes(pattern.start) && !fullContent.includes(pattern.end)) {
+                                if (pattern.start.test(fullContent) && !pattern.end.test(fullContent)) {
                                     isThinking = true;
                                     break;
                                 }

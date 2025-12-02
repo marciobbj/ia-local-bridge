@@ -17,9 +17,9 @@ const MessageBubble = ({ message }) => {
         if (!message.content) return { content: '', thought: '', hasThought: false };
 
         const THOUGHT_PATTERNS = [
-            { start: '<think>', end: '</think>', regex: /<think>([\s\S]*?)<\/think>/, openRegex: /<think>([\s\S]*)$/ },
-            { start: '<thought>', end: '</thought>', regex: /<thought>([\s\S]*?)<\/thought>/, openRegex: /<thought>([\s\S]*)$/ },
-            { start: '[THOUGHT]', end: '[/THOUGHT]', regex: /\[THOUGHT\]([\s\S]*?)\[\/THOUGHT\]/, openRegex: /\[THOUGHT\]([\s\S]*)$/ }
+            { start: '<think>', end: '</think>', regex: /<think>([\s\S]*?)<\/think>/i, openRegex: /<think>([\s\S]*)$/i },
+            { start: '<thought>', end: '</thought>', regex: /<thought>([\s\S]*?)<\/thought>/i, openRegex: /<thought>([\s\S]*)$/i },
+            { start: '[THOUGHT]', end: '[/THOUGHT]', regex: /\[THOUGHT\]([\s\S]*?)\[\/THOUGHT\]/i, openRegex: /\[THOUGHT\]([\s\S]*)$/i }
         ];
 
         for (const pattern of THOUGHT_PATTERNS) {
