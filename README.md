@@ -1,6 +1,6 @@
 # IA Local Bridge 🌉
 
-A powerful, privacy-focused desktop AI client built with Electron and React. Connect to your favorite AI models—whether cloud-based or running locally—in a beautiful, minimalist interface.
+A simple desktop AI client built with Electron and React. Connect to your favorite AI models—whether cloud-based or running locally—in a beautiful, minimalist interface.
 
 ![IA Local Bridge Screenshot](https://placehold.co/800x500/1f2937/ffffff?text=IA+Local+Bridge+Preview)
 
@@ -47,7 +47,7 @@ A powerful, privacy-focused desktop AI client built with Electron and React. Con
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/ia-local-bridge.git
+    git clone https://github.com/marciobbj/ia-local-bridge.git
     cd ia-local-bridge
     ```
 
