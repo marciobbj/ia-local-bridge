@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Send, Paperclip, Mic, Image as ImageIcon, X } from 'lucide-react';
 import { useChatStore } from '../store/useChatStore';
 
@@ -10,31 +10,26 @@ const InputArea = () => {
     const [isRecording, setIsRecording] = useState(false);
     const mediaRecorderRef = useRef(null);
     const audioChunksRef = useRef([]);
+    const [audioPreview, setAudioPreview] = useState(null);
+
+    useEffect(() => {
+        if (window.electronAPI) {
+            const cleanup = window.electronAPI.onScreenshotCaptured((base64Image) => {
+                setAttachments(prev => [...prev, {
+                    name: `screenshot-${Date.now()}.png`,
+                    type: 'image/png',
+                    content: base64Image
+                }]);
+            });
+            return cleanup;
+        }
+    }, []);
 
     const handleScreenshot = async () => {
-        try {
-            const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-            const track = stream.getVideoTracks()[0];
-            const imageCapture = new ImageCapture(track);
-            const bitmap = await imageCapture.grabFrame();
-
-            const canvas = document.createElement('canvas');
-            canvas.width = bitmap.width;
-            canvas.height = bitmap.height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(bitmap, 0, 0);
-
-            const base64 = canvas.toDataURL('image/png');
-
-            setAttachments(prev => [...prev, {
-                name: `screenshot-${Date.now()}.png`,
-                type: 'image/png',
-                content: base64
-            }]);
-
-            track.stop();
-        } catch (err) {
-            console.error("Screenshot failed", err);
+        if (window.electronAPI) {
+            await window.electronAPI.startScreenshot();
+        } else {
+            console.warn("Electron API not available");
         }
     };
 
@@ -57,15 +52,7 @@ const InputArea = () => {
 
                 mediaRecorder.onstop = () => {
                     const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                        setAttachments(prev => [...prev, {
-                            name: `recording-${Date.now()}.webm`,
-                            type: 'audio/webm',
-                            content: reader.result
-                        }]);
-                    };
-                    reader.readAsDataURL(audioBlob);
+                    setAudioPreview(audioBlob);
                     stream.getTracks().forEach(track => track.stop());
                 };
 
@@ -75,6 +62,24 @@ const InputArea = () => {
                 console.error("Audio recording failed", err);
             }
         }
+    };
+
+    const confirmRecording = () => {
+        if (!audioPreview) return;
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setAttachments(prev => [...prev, {
+                name: `recording-${Date.now()}.webm`,
+                type: 'audio/webm',
+                content: reader.result
+            }]);
+            setAudioPreview(null);
+        };
+        reader.readAsDataURL(audioPreview);
+    };
+
+    const cancelRecording = () => {
+        setAudioPreview(null);
     };
 
     const handleSubmit = async (e) => {
@@ -181,6 +186,28 @@ const InputArea = () => {
                 >
                     <Mic size={20} />
                 </button>
+
+                {audioPreview && (
+                    <div className="absolute bottom-full left-0 mb-2 bg-gray-800 p-2 rounded-lg border border-gray-700 flex items-center gap-2 shadow-lg z-10">
+                        <audio controls src={URL.createObjectURL(audioPreview)} className="h-8 w-48" />
+                        <button
+                            type="button"
+                            onClick={confirmRecording}
+                            className="p-1 bg-green-600 text-white rounded hover:bg-green-700"
+                            title="Confirm Recording"
+                        >
+                            <Send size={14} />
+                        </button>
+                        <button
+                            type="button"
+                            onClick={cancelRecording}
+                            className="p-1 bg-red-600 text-white rounded hover:bg-red-700"
+                            title="Discard Recording"
+                        >
+                            <X size={14} />
+                        </button>
+                    </div>
+                )}
 
                 <button
                     type="submit"
