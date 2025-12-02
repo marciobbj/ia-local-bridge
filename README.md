@@ -6,7 +6,7 @@
   </p>
 </div>
 
-![IA Local Bridge Screenshot](./imgs/screenshot_one.png)
+![IA Local Bridge Screenshot](./imgs/screenshot.png)
 
 ## Features
 
