@@ -1,5 +1,5 @@
 {
-  "name": "ai-client",
+  "name": "ai-local-bridge",
   "private": true,
   "version": "0.0.1",
   "main": "electron/main.cjs",
