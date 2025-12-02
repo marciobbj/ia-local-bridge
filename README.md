@@ -1,6 +1,6 @@
 # IA Local Bridge
 
-A simple desktop AI client built with Electron and React. Connect to your favorite AI models—whether cloud-based or running locally—in a beautiful, minimalist interface.
+A simple desktop AI client built with Electron and React. Connect to your favorite AI models—whether cloud-based or running locally, in a beautiful, minimalist interface.
 
 ![IA Local Bridge Screenshot](./imgs/screenshot_one.png)
 
