@@ -235,6 +235,7 @@ export const useChatStore = create(
 
                     const THOUGHT_PATTERNS = [
                         { start: /<think>/i, end: /<\/think>/i },
+                        { start: /\[THINK\]/i, end: /\[\/THINK\]/i },
                         { start: /<thought>/i, end: /<\/thought>/i },
                         { start: /\[THOUGHT\]/i, end: /\[\/THOUGHT\]/i }
                     ];
